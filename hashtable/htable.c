@@ -6,7 +6,7 @@
 
 
 
-struct htable {
+struct htablerec {
 int capacity;
 int key_num;
 int *freq_array;
@@ -100,13 +100,19 @@ int htable_insert(htable h, char *str){
 
 htable htable_new(int capacity){
 	
-
-	htable result=malloc(sizeof result);
+	int i;
+	htable result=malloc(sizeof *result);
 	result->capacity = capacity;
 	result-> key_num= 0;
 
 	result->string_array= emalloc(capacity * sizeof (char*));
 	result->freq_array =  emalloc(capacity * sizeof result->freq_array[0]);
+	for(i=0;i<capacity;i++){
+
+	result->string_array[i]=NULL;
+	result->freq_array[i]=0;
+
+	}
 		
 	return result; 
 }
