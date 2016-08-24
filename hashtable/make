@@ -1,0 +1,7 @@
+
+	gcc -ansi -pedantic -W -Wall -O2 -g -c htable.c
+	gcc -ansi -pedantic -W -Wall -O2 -g -c hashmain.c
+	gcc -ansi -pedantic -W -Wall -O2 -g -c mylib.c
+	gcc -ansi -pedantic -W -Wall -O2 -g -c hashmain2.c
+	gcc -o hashmain  htable.o hashmain.o mylib.o
+	gcc -o hashmain2 htable.o hashmain2.o mylib.o
