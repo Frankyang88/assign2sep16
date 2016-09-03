@@ -1,0 +1,4 @@
+gcc -ansi -pedantic -W -Wall -O2 -g -c mylib.c
+	gcc -ansi -pedantic -W -Wall -O2 -g -c rbt.c
+	gcc -ansi -pedantic -W -Wall -O2 -g -c main.c
+	gcc -o main  main.o rbt.o mylib.o
