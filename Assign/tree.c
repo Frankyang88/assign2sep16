@@ -5,38 +5,7 @@
 #include "mylib.h"
 
 
-
-
-int LRBranch(char* bstr, char* istr){
-	/*
-	if( strlen(bstr)<= strlen(istr))
-	return 1;
-	else return 0;
-	*/
-
-	char key= *bstr;
-	char input= *istr;
-	int x=0;
-	if(key!='\0' && input != '\0')
-	x = key-input;
-	else if(key=='\0' && input !='\0')
-	return 1;
-	else if(key!='\0' && input == '\0')
-	return 0;
-	
-	if(key=='\0' && input=='\0')
-	printf("exception!\n");
-	
-	
-	
-	if( x < 0 )
-	return 1;
-	else if(x>0)
-	return 0;
-	else return LRBranch(bstr+1,istr+1); 
-		
-	
-}
+/*tree structure*/
 struct treerec{
 	char *key;
 	tree_color color;
@@ -48,6 +17,49 @@ struct treerec{
 };
 
 
+/*static method declaration*/
+static void tree_output_dot_aux(tree t, FILE *out); 
+
+/*LRBranch:decide the key's position in left or right branch
+ * this is in alphabetic order
+ * do comparison from letter to letter*/
+int LRBranch(char* bstr, char* istr){
+	char key= *bstr;
+	char input= *istr;
+	int x=0;
+	if(key!='\0' && input != '\0')
+	x = key-input;
+	else if(key=='\0' && input !='\0')
+	return 1;
+	else if(key!='\0' && input == '\0')
+	return 0;
+	
+	/*special cases: it shouldnot happen
+ 	*an exception case*/
+	if(key=='\0' && input=='\0')
+	printf("exception in selecting left/right subtrees!\n");
+	
+	
+	/*compare the first letter, if they are the same letter
+ 	*do recursive operation to the next letter*/
+	if( x < 0 )
+	return 1;
+	else if(x>0)
+	return 0;
+	else return LRBranch(bstr+1,istr+1); 
+		
+	
+}
+/*tree insert:
+ * insert a string into tree
+ * if the root(node) is null then return
+ * if the current node is not null but its key is null then insert into this node and return root node
+ * if the current node is not null and it has already placed a key
+ * then check its left or right branch
+ * if the left/right branch is null, create a node and insert string into this node
+ * otherwise do recursion on that branch(Whether it go to left or right is decided by LRBranch function)
+ * after insertion, if it is a red black tree do tree fix and tree fix will return the new root node
+ * if it is a bst, if return the root of the tree*/
 tree tree_insert(tree b, char *str){
 	tree tmp;
 	
@@ -98,6 +110,12 @@ tree tree_insert(tree b, char *str){
 	return find_root(b);
 }
 
+
+/*tree search:
+ * search string in the tree, similar to tree insert operation 
+ * in the process of finding a cell,
+ *if it find the input string in tree, it will return 0
+ * otehrwise, it return 1*/
 int tree_search(tree b, char *str){
 	if(b==NULL) return 1;
 
@@ -113,13 +131,18 @@ int tree_search(tree b, char *str){
 	}		
 }
 
+/*tree depth:
+ * return the depth of tree
+ * recursive operation,it go through all the subtrees
+ * and return the maximum height of all nodes as its height*/
 int tree_depth(tree b){
 	int depthl=0;
 	int depthr=0;
 	if(b == NULL) return 0;
 	else{
+
 		if(b->left ==NULL && b->right==NULL)
-		return 1;
+		return 0;
 	
 		if(b->left !=NULL)	
 		depthl =  tree_depth(b->left)+1;	
@@ -133,7 +156,9 @@ int tree_depth(tree b){
 	}
 }
 
-
+/*tree free:
+ * free the tree nodes and the string memory
+ * recursive operation on both left and right children of the current nodes*/
 tree tree_free(tree b){
 	
 	if(b!=NULL){
@@ -150,6 +175,8 @@ tree tree_free(tree b){
 	}
 	return b;	
 }
+/*tree inoder:
+ * inorder traverse,print tree node in inorder*/
 void tree_inorder(tree b, void (f)(tree_color color, char *str)){
 	
 	
@@ -163,6 +190,8 @@ void tree_inorder(tree b, void (f)(tree_color color, char *str)){
 
 }
 
+/*tree postorder:
+ * postorder traverse,print tree node in post order*/
 void tree_postorder(tree b, void (f)(tree_color color, char *str)){
 	
 	
@@ -176,6 +205,9 @@ void tree_postorder(tree b, void (f)(tree_color color, char *str)){
 	}
 
 }
+/*find root
+ * return the root node of the tree
+ * if the node's parent is null, then return it*/
 tree find_root(tree b){
 	if(b==NULL)
 	return b;
@@ -189,6 +221,8 @@ tree find_root(tree b){
 	return NULL;
 }
 
+/*tree new:
+ * create a new tree with type typet*/
 tree tree_new(tree_t typet){
 	tree b;
    	 b= emalloc(sizeof( *b));
@@ -202,7 +236,8 @@ tree tree_new(tree_t typet){
 	b->frequency = 0;
 	return b; 
 }
-
+/*tree preorder:
+ * print the tree node in preorder*/
 void tree_preorder(tree b, void (f)(tree_color color,char *str)){
 	if (b!= NULL){
     	f(b->color,b->key);
@@ -211,7 +246,9 @@ void tree_preorder(tree b, void (f)(tree_color color,char *str)){
 	tree_preorder((b->right),f);
        	}
 }
-
+/*tree min:
+ * find the minimum node in the tree
+ * go down recursive to the left most child*/
 tree tree_min(tree b){
 	if(b==NULL) return NULL;
 		
@@ -223,7 +260,9 @@ tree tree_min(tree b){
 		}
 	return NULL;
 }
-
+/*tree max:
+ * find the maximum node in the tree
+ * go down recursively to the right most child*/
 tree tree_max(tree b){
 	if(b==NULL) return b;
 		
@@ -236,7 +275,14 @@ tree tree_max(tree b){
 
 	return NULL;
 }
-
+/*right rotate:
+ * make the left child of root to be the new root
+ * make the old root to be new right child of the new root
+ * then if the new root's has an old right child,make the old right child to be the left child of the old root
+ * if the new root has no old right child, make the old root's left child to be null
+ * then fix up all the pointer of parents
+ * the new root get the parent of the old root
+ * then set the old root's parent to be new root*/
 tree right_rotate(tree b){
 	
 	if(NULL==b || NULL==b->left)
@@ -262,6 +308,14 @@ tree right_rotate(tree b){
 		
 		}
 }
+/*left rotate:
+ * make the right child of root to be the new root
+ * make the old root to be new left child of the new root
+ * then if the new root's has an old left child,make the old left child to be the right child of the old root
+ * if the new root has no old left child, make the old root's right child to be null
+ * then fix up all the pointer of parents
+ * the new root get the parent of the old root
+ * then set new root as the old root's parent*/
 
 tree left_rotate(tree b){
 
@@ -285,7 +339,14 @@ tree left_rotate(tree b){
 		return b;
 		}
 }
-
+/*tree fix:
+ * recursive operation from the current to the top nodes
+ * exactly the same operation as that in the labbook
+ * add some code to fix the pointer problems that may break the tree's link
+ * it fix the 'root' recursively 
+ * if grandparent does not exist and parent exist, just repaint parent black
+ * if parent doesnot exist, repaint itself black
+ * */
 tree tree_fix(tree b){
 	tree new_root1;
 	tree new_root2;
@@ -440,7 +501,7 @@ void tree_output_dot(tree t, FILE *out) {
  * @param t the tree to output a DOT description of.
  * @param out the stream to write the DOT output to.
  */
-void tree_output_dot_aux(tree t, FILE *out) {
+static void tree_output_dot_aux(tree t, FILE *out) {
    if(t->key != NULL) {
       fprintf(out, "\"%s\"[label=\"{<f0>%s:%d|{<f1>|<f2>}}\"color=%s];\n",
               t->key, t->key, t->frequency,

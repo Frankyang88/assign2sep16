@@ -25,5 +25,4 @@ extern int LRBranch(char* bstr, char* istr);
 extern tree find_root(tree b);
 extern int tree_depth(tree b);
 extern void tree_output_dot(tree t, FILE *out);
-extern void tree_output_dot_aux(tree t, FILE *out); 
 #endif

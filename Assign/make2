@@ -1,4 +1,4 @@
 	gcc -ansi -pedantic -W -Wall -O2 -g -c mylib.c
 	gcc -ansi -pedantic -W -Wall -O2 -g -c tree.c
-	gcc -ansi -pedantic -W -Wall -O2 -g -c tree_main.c
-	gcc -o tree_main  tree_main.o tree.o mylib.o
+	gcc -ansi -pedantic -W -Wall -O2 -g -c tree-main.c
+	gcc -o tree-main  tree-main.o tree.o mylib.o
