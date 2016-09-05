@@ -134,62 +134,6 @@ int tree_depth(tree b){
 }
 
 
-tree tree_delete(tree b,char *str){
-
-	tree tmp;
-
-	if(b==NULL){ return NULL;}
-
-	if(b->key !=NULL){
-			
-		if( strcmp(b->key,str)==0){
-
-			if(b->left== NULL && b->right==NULL)
-			{	
-				free(b->key);
-				free(b);
-				return b;	
-			}
-			if(b->left ==NULL)
-			{     
-				tmp=b;
-				b=b->right;
-				free(tmp->key);
-				free(tmp);
-
-				return b;
-			}
-			if(b->right ==NULL){
-			
-				tmp=b;
-				b=b->left;
-				
-				free(tmp->key);
-				free(tmp);
-
-				return b;
-			}
-			if(b->left !=NULL && b->right !=NULL){
-
-				tmp=b;
-				b=tree_min(b->right);			
-				free(tmp);
-				free(tmp->key);
-				tree_delete(b->right,b->key);
-				return b;	
-			}
-
-				
-		}
-		else if( LRBranch(b->key,str))
-			b->right=tree_delete(b->right,str);
-		else    b->left=tree_delete(b->left,str); 
-	}
-
-	return b;
-}		
-
-
 tree tree_free(tree b){
 	
 	if(b!=NULL){

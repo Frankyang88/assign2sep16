@@ -9,7 +9,6 @@ typedef enum {RED,BLACK} tree_color;
 typedef enum {BST,RBT} tree_t;
 typedef struct treerec *tree;
 
-extern tree tree_delete(tree b, char *str);
 extern tree tree_free(tree b);
 extern void tree_inorder(tree b, void f(tree_color color,char *str));
 extern tree tree_insert(tree b, char *str);
