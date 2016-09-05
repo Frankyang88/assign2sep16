@@ -21,7 +21,7 @@ static void print_stats_line(htable h, FILE *stream, int percent_full);
 /*hashfunc1:
  * the first hashfunction used in the htable*/
 static unsigned int hashfunc1(htable h, int i){
-	return abs(i%(h->capacity-1));
+	return abs(i%(h->capacity));
 }
 
 
@@ -30,7 +30,7 @@ static unsigned int hashfunc1(htable h, int i){
 unsigned int htable_step(htable h, unsigned int i_key) {
 int j=h->capacity;
 if(h->method==DOUBLE_H)
-return 1 + (i_key % (j- 2));
+return (i_key % (j- 1));
 else if(h->method==LINEAR_P)
 return 1;
 else printf("hashing undefine");
