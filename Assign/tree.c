@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "rbt.h"
+#include "tree.h"
 #include <string.h>
 #include "mylib.h"
 
@@ -23,61 +23,68 @@ int LRBranch(char* bstr, char* istr){
 		
 	
 }
-struct rbtrec{
+struct treerec{
 	char *key;
-	rbt_color color;
-	rbt left;
-	rbt right;
-	rbt parent;
+	tree_color color;
+	tree left;
+	tree right;
+	tree parent;
 	tree_t type;
+	int frequency;
 };
 
 
-rbt rbt_insert(rbt b, char *str){
-	rbt tmp;
+tree tree_insert(tree b, char *str){
+	tree tmp;
 	
 	if(b == NULL || str == NULL ) return b;
 
 	if(b->key==NULL){
 	b->key=emalloc((strlen(str)+1)*sizeof(char));
 	strcpy(b->key,str);
-
+	b->frequency = 0;
 	return find_root(b);
 
 	}
 	else {
+		if(strcmp(b->key,str)==0){
+			b->frequency +=1;
+			return find_root(b);		
+		}
 		if( LRBranch(b->key,str) ){
 			
 			if(b->right==NULL){
 				
-				tmp=rbt_new();
+				tmp=tree_new();
 				b->right=tmp;
 				tmp->parent=b;
 				tmp->type=b->type;
-				rbt_insert(tmp,str);
-				return rbt_fix(b->right);	
+				tree_insert(tmp,str);
+				if(b->type == RBT)
+				return tree_fix(b->right);
+				else return find_root(b);	
 				}		
-			else rbt_insert(b->right,str);
+			else tree_insert(b->right,str);
 		}
 		else {
 				if(b->left==NULL){
 			
-				tmp=rbt_new();
+				tmp=tree_new();
 				b->left=tmp;	
 				tmp->parent=b;
 				tmp->type=b->type;
-				rbt_insert(tmp,str);
-
-				return rbt_fix(b->left);
-				
+				tree_insert(tmp,str);
+				if(b->type == RBT)
+				return tree_fix(b->left);
+				else return find_root(b);
 				}
-				else rbt_insert(b->left,str);
+				else tree_insert(b->left,str);
 			}
 	}
 	return find_root(b);
 }
 
-int rbt_search(rbt b, char *str){
+int tree_search(tree b, char *str){
 	if(b==NULL) return 1;
 
 	if(b->key==NULL) return 1;
@@ -87,14 +94,35 @@ int rbt_search(rbt b, char *str){
 		
 		}
 		else if(LRBranch(b->key,str))
-			return rbt_search(b->right,str);
-		else    return rbt_search(b->left,str); 
+			return tree_search(b->right,str);
+		else    return tree_search(b->left,str); 
 	}		
 }
 
-rbt rbt_delete(rbt b,char *str){
+int tree_depth(tree b){
+	int depthl=0;
+	int depthr=0;
+	if(b == NULL) return 0;
+	else{
+		if(b->left ==NULL && b->right==NULL)
+		return 1;
+	
+		if(b->left !=NULL)	
+		depthl =  tree_depth(b->left)+1;	
 
-	rbt tmp;
+		if(b->right!=NULL)
+		depthr =  tree_depth(b->right)+1;
+	
+		if(depthl>depthr)
+		return depthl;
+		else return depthr;
+	}
+}
+
+
+tree tree_delete(tree b,char *str){
+
+	tree tmp;
 
 	if(b==NULL){ return NULL;}
 
@@ -130,32 +158,32 @@ rbt rbt_delete(rbt b,char *str){
 			if(b->left !=NULL && b->right !=NULL){
 
 				tmp=b;
-				b=rbt_min(b->right);			
+				b=tree_min(b->right);			
 				free(tmp);
 				free(tmp->key);
-				rbt_delete(b->right,b->key);
+				tree_delete(b->right,b->key);
 				return b;	
 			}
 
 				
 		}
 		else if( LRBranch(b->key,str))
-			b->right=rbt_delete(b->right,str);
-		else    b->left=rbt_delete(b->left,str); 
+			b->right=tree_delete(b->right,str);
+		else    b->left=tree_delete(b->left,str); 
 	}
 
 	return b;
 }		
 
 
-rbt rbt_free(rbt b){
+tree tree_free(tree b){
 	
 	if(b!=NULL){
 		
 	if(b->left !=NULL)
-	rbt_free(b->left);
+	tree_free(b->left);
 	if(b->right !=NULL)
-	rbt_free(b->right);
+	tree_free(b->right);
 	
 	if(b->key!=NULL)
 	free(b->key);
@@ -164,33 +192,33 @@ rbt rbt_free(rbt b){
 	}
 	return b;	
 }
-void rbt_inorder(rbt b, void (f)(rbt_color color, char *str)){
+void tree_inorder(tree b, void (f)(tree_color color, char *str)){
 	
 	
 	if(b != NULL) {
 	
-	rbt_inorder( (b->left), f);
+	tree_inorder( (b->left), f);
 	f(b->color,b->key);
 
-        rbt_inorder( (b->right), f);
+        tree_inorder( (b->right), f);
 	}
 
 }
 
-void rbt_postorder(rbt b, void (f)(rbt_color color, char *str)){
+void tree_postorder(tree b, void (f)(tree_color color, char *str)){
 	
 	
 	if(b != NULL) {
 	
-	rbt_postorder( (b->left), f);
+	tree_postorder( (b->left), f);
 	
-        rbt_postorder( (b->right), f);
+        tree_postorder( (b->right), f);
 	f(b->color,b->key);
 
 	}
 
 }
-rbt find_root(rbt b){
+tree find_root(tree b){
 	if(b==NULL)
 	return b;
 	
@@ -203,9 +231,9 @@ rbt find_root(rbt b){
 	return NULL;
 }
 
-rbt rbt_new(tree_t typet){
-	rbt b;
-    b= emalloc(sizeof( *b));
+tree tree_new(tree_t typet){
+	tree b;
+   	 b= emalloc(sizeof( *b));
 	b->key= NULL;
 	b->left=NULL;
 	b->right=NULL;
@@ -213,23 +241,24 @@ rbt rbt_new(tree_t typet){
 	b->color=RED;
 	b->type= BST;
 	b->type = typet;
+	b->frequency = 0;
 	return b; 
 }
 
-void rbt_preorder(rbt b, void (f)(rbt_color color,char *str)){
+void tree_preorder(tree b, void (f)(tree_color color,char *str)){
 	if (b!= NULL){
     	f(b->color,b->key);
 
-	rbt_preorder((b->left) ,f);
-	rbt_preorder((b->right),f);
+	tree_preorder((b->left) ,f);
+	tree_preorder((b->right),f);
        	}
 }
 
-rbt rbt_min(rbt b){
+tree tree_min(tree b){
 	if(b==NULL) return NULL;
 		
 	if(b->left !=NULL)
-	rbt_min(b->left);
+	tree_min(b->left);
 	
 	if(b->left==NULL && b->key!=NULL){
 		return b;	
@@ -237,11 +266,11 @@ rbt rbt_min(rbt b){
 	return NULL;
 }
 
-rbt rbt_max(rbt b){
+tree tree_max(tree b){
 	if(b==NULL) return b;
 		
 	if(b->right !=NULL)
-	rbt_max(b->right);
+	tree_max(b->right);
 	
 	if(b->right==NULL && b->key !=NULL){
 	return b;
@@ -250,12 +279,12 @@ rbt rbt_max(rbt b){
 	return NULL;
 }
 
-rbt right_rotate(rbt b){
+tree right_rotate(tree b){
 	
 	if(NULL==b || NULL==b->left)
 	return b;
 	else{
-		rbt tmp=b;
+		tree tmp=b;
 		b=b->left;
 		
 		b->parent=tmp->parent;
@@ -276,12 +305,12 @@ rbt right_rotate(rbt b){
 		}
 }
 
-rbt left_rotate(rbt b){
+tree left_rotate(tree b){
 
  	if(NULL==b || NULL==b->right)
 	return b;
 	else{
-		rbt tmp=b;
+		tree tmp=b;
 
 		b=b->right;
 		b->parent=tmp->parent;
@@ -299,65 +328,49 @@ rbt left_rotate(rbt b){
 		}
 }
 
-rbt rbt_fix(rbt b){
-	rbt new_root1;
-	rbt new_root2;
-
-	if(b->type == RBT){
-
-			if(b== NULL){
-				printf("error occur\n");
-			}
+tree tree_fix(tree b){
+	tree new_root1;
+	tree new_root2;
 
 			if(b->parent == NULL){
 				b->color = BLACK;
 				return b;
 			}
 			else if(b->parent->parent==NULL){
-			b->parent->color = BLACK;
-			return b->parent;
+				b->parent->color = BLACK;
+				return b->parent;
 			}
 			else {
-
 				if(  ( b->parent->parent->left == b->parent && b->parent->left == b   ) &&  IS_RED(b->parent) && IS_RED(b->parent->left)){
-		
 					if(IS_BLACK(b->parent->parent->right)){
-			
-						rbt R = b->parent->parent->parent;
-
+						tree R = b->parent->parent->parent;
 						new_root1=right_rotate(b->parent->parent);
-
 						if(R != NULL && R->left == new_root1->right)
 						R->left = new_root1;		
 						else if(R!=NULL && R->right== new_root1->right)
 						R->right = new_root1;
-	
 						new_root1->color=BLACK;
 						new_root1->right->color=RED;
-	
-						return rbt_fix(new_root1);
-			
+						return tree_fix(new_root1);
 					}
-		
 					if(IS_RED(b->parent->parent->right)){
 					  b->parent->parent->color= RED;
 					  b->parent->parent->left->color= BLACK;
 					  b->parent->parent->right->color=BLACK;
-					  return rbt_fix(b->parent->parent);
+					  return tree_fix(b->parent->parent);
 					}
-			}
-	
+				}
 			if( ( b->parent->parent->left == b->parent && b->parent->right == b  )  && IS_RED(b->parent) && IS_RED(b->parent->right)){
 				if(IS_RED(b->parent->parent->right)){
 					b->parent->parent->color= RED;
 					b->parent->parent->left->color= BLACK;
 					b->parent->parent->right->color=BLACK;
-					return rbt_fix(b->parent->parent);
-				}
+					return tree_fix(b->parent->parent);
+					}
 				if(IS_BLACK(b->parent->parent->right)){
 
-					rbt R1 = b->parent->parent;
-					rbt R2 = b->parent->parent->parent;
+					tree R1 = b->parent->parent;
+					tree R2 = b->parent->parent->parent;
 			
 					new_root1=left_rotate(b->parent);
 					R1->left = new_root1;
@@ -373,21 +386,21 @@ rbt rbt_fix(rbt b){
 			
 					new_root2->color=BLACK;
 					new_root2->right->color=RED;	
-					return rbt_fix(new_root2);	
+					return tree_fix(new_root2);	
+					}
 				}
-			}
 
 			if( (  b->parent->parent->right == b->parent && b->parent->left == b   ) && IS_RED(b->parent) && IS_RED(b->parent->left)){
 				if(IS_RED(b->parent->parent->left)){
 					b->parent->parent->color= RED;
 					b->parent->parent->left->color= BLACK;
 					b->parent->parent->right->color=BLACK;
-					return rbt_fix(b->parent->parent);
+					return tree_fix(b->parent->parent);
 				}
 				if(IS_BLACK(b->parent->parent->left)){
 			
-					rbt R1 = b->parent->parent;
-					rbt R2 = b->parent->parent->parent;
+					tree R1 = b->parent->parent;
+					tree R2 = b->parent->parent->parent;
 
 					new_root1=right_rotate(b->parent);
 					R1->right = new_root1;
@@ -402,7 +415,7 @@ rbt rbt_fix(rbt b){
 					new_root2->color=BLACK;
 					new_root2->left->color=RED;
 
-					return rbt_fix(new_root2);		
+					return tree_fix(new_root2);		
 				}
 			}
 
@@ -413,11 +426,11 @@ rbt rbt_fix(rbt b){
 				b->parent->parent->color= RED;
 				b->parent->parent->left->color= BLACK;
 				b->parent->parent->right->color=BLACK;
-				return rbt_fix(b->parent->parent);
+				return tree_fix(b->parent->parent);
 			  }
 			  if(IS_BLACK(b->parent->parent->left)){
 
-				rbt R = b->parent->parent->parent;
+				tree R = b->parent->parent->parent;
 
 				new_root1=left_rotate(b->parent->parent);
 			
@@ -428,7 +441,7 @@ rbt rbt_fix(rbt b){
 
 				new_root1->color=BLACK;
 				new_root1->left->color=RED;	
-				return rbt_fix(new_root1);	
+				return tree_fix(new_root1);	
 			  }
 			}
 
@@ -436,8 +449,52 @@ rbt rbt_fix(rbt b){
 		}
 
 		return find_root(b);
-	}
-	else {	find_root(b);}
 
 	return find_root(b);
 }
+
+/* -*- mode:c -*- */
+
+/* These functions should be added to your tree.c file */
+
+/**
+ * Output a DOT description of this tree to the given output stream.
+ * DOT is a plain text graph description language (see www.graphviz.org).
+ * You can create a viewable graph with the command
+ *
+ *    dot -Tpdf < graphfile.dot > graphfile.pdf
+ *
+ * You can also use png, ps, jpg, svg... instead of pdf
+ *
+ * @param t the tree to output the DOT description of.
+ * @param out the stream to write the DOT description to.
+ */
+void tree_output_dot(tree t, FILE *out) {
+   fprintf(out, "digraph tree {\nnode [shape = Mrecord, penwidth = 2];\n");
+   tree_output_dot_aux(t, out);
+   fprintf(out, "}\n");
+}
+
+/**
+ * Traverses the tree writing a DOT description about connections, and
+ * possibly colours, to the given output stream.
+ *
+ * @param t the tree to output a DOT description of.
+ * @param out the stream to write the DOT output to.
+ */
+void tree_output_dot_aux(tree t, FILE *out) {
+   if(t->key != NULL) {
+      fprintf(out, "\"%s\"[label=\"{<f0>%s:%d|{<f1>|<f2>}}\"color=%s];\n",
+              t->key, t->key, t->frequency,
+              (RBT == t->type  && RED == t->color) ? "red":"black");
+   }
+   if(t->left != NULL) {
+      tree_output_dot_aux(t->left, out);
+      fprintf(out, "\"%s\":f1 -> \"%s\":f0;\n", t->key, t->left->key);
+   }
+   if(t->right != NULL) {
+      tree_output_dot_aux(t->right, out);
+      fprintf(out, "\"%s\":f2 -> \"%s\":f0;\n", t->key, t->right->key);
+   }
+}
+
