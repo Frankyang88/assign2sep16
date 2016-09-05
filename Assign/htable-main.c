@@ -81,7 +81,7 @@ while((option = getopt(argc,argv,optstring))!=EOF){
 	case 's':sflag=1;svalue=atoi(optarg);break;
 	case 't':tflag=1;tvalue=atoi(optarg);break; /*set table size*/
 	case 'h':usage();return 0;
-	default :usage();
+	default :usage();return 0;
 	}
 }
 
@@ -111,6 +111,8 @@ if(cflag==1){
 			printf("%s\n",word);
 		}
 	}
+
+	fclose(file);
 	end2 =clock();
 	
 	fprintf(stderr,"Fill time	: %f\n",(end1-start1)/(double)CLOCKS_PER_SEC);	

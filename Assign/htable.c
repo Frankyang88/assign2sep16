@@ -136,8 +136,6 @@ htable htable_new(int capacity,hashing_t method){
 	}
 	
 	result->method=method;	
-	result->stats=emalloc(capacity*sizeof(result->stats[0]));
-
 	return result; 
 }
 

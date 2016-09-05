@@ -8,9 +8,6 @@
 #include <time.h>
 
 
-static void print_info(int freq,char *word){
-	printf("%-4d %s \n",freq,word);
-}
 void usage(){
 printf("Usage: ./tree-main [Option]... <Stdin>\n");
 printf("\n");
@@ -28,27 +25,6 @@ printf("-r 	     Make the tree and RBT (the default is a BST)\n");
 printf("-h           Display this message\n");
 
 }
-
-unsigned int first_prime(unsigned int seed){
-    unsigned int s=seed;
-    int j;	
-	
-    while(1) 
-    {        
-	for (j=2; j*j<=s; j++)
-        {
-            if (s % j == 0) 
-            break;
-	    else if((j+1)*(j+1) > s )
-		return s;
-        }
-	s++;
-    }
-	
-    return 0;
-}
-
-
 
 
 int main(int argc, char ** argv){
@@ -74,10 +50,10 @@ while((option = getopt(argc,argv,optstring))!=EOF){
 	case 'c':cflag=1;cvalue=optarg;break; /*indicate a filename*/
 	case 'd':dflag=1;break; /*print tree depth*/
 	case 'o':oflag=1;break;     /*tree dot output*/
-	case 'f':fflag=1;fvalue=optarg;break;/**indicate output file name*/
-	case 'r':treetype= RBT;break; /*set table size*/
+	case 'f':fflag=1;fvalue=optarg;break;/*indicate output file name*/
+	case 'r':treetype= RBT;break; /*set tree type*/
 	case 'h':usage();return 0;
-	default :usage();
+	default :usage();return 0;
 	}
 }
 
@@ -99,6 +75,7 @@ if(cflag==1){
 			count++;	
 		}
 	}
+	fclose(file);
 	end2 =clock();
 	fprintf(stderr,"Fill time	: %f\n",(end1-start1)/(double)CLOCKS_PER_SEC);	
 	fprintf(stderr,"Search time	: %f\n",(end2-start2)/(double)CLOCKS_PER_SEC);	
@@ -107,22 +84,25 @@ if(cflag==1){
 else {
 	if(dflag==1){
 	printf("%d\n",tree_depth(b));
-	return 0;
 	}
-	if(oflag==1){
-			FILE *fp; 
-			if(fflag==1){
-				fp=fopen(fvalue, "wb+");
+	else {if(oflag==1){
+				FILE *fp; 
+				if(fflag==1){
+					fp=fopen(fvalue, "wb+");
 
-			}else{ 
-				fp=fopen("tree-view.dot","ab+");
+				}else{ 
+					fp=fopen("tree-view.dot","ab+");
 				}
 
-			tree_output_dot(b, fp);
-			fclose(fp); 
+				tree_output_dot(b, fp);
+				fclose(fp); 
 
+			}
 		}
 	}
+
+tree_free(b);
+
 return 0;
 
 }

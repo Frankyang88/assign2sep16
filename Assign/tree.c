@@ -8,18 +8,32 @@
 
 
 int LRBranch(char* bstr, char* istr){
-/*
-	if( strlen(bstr)< strlen(istr))
+	/*
+	if( strlen(bstr)<= strlen(istr))
 	return 1;
 	else return 0;
-*/	
+	*/
+
 	char key= *bstr;
 	char input= *istr;
-	int x = key- input;
+	int x=0;
+	if(key!='\0' && input != '\0')
+	x = key-input;
+	else if(key=='\0' && input !='\0')
+	return 1;
+	else if(key!='\0' && input == '\0')
+	return 0;
+	
+	if(key=='\0' && input=='\0')
+	printf("exception!\n");
+	
+	
+	
 	if( x < 0 )
 	return 1;
-	else return 0;
-	
+	else if(x>0)
+	return 0;
+	else return LRBranch(bstr+1,istr+1); 
 		
 	
 }
