@@ -121,7 +121,9 @@ h=htable_new(tvalue,method);
 start1=clock();
 /*read from stdin,insert into hash table*/
 while (getword(word, sizeof word, stdin) != EOF) {
-	htable_insert(h, word);
+	if(htable_insert(h, word)==-1)
+	printf("word: %s fail to insert into hash table!\n",word);
+	
 }
 end1 = clock();
 

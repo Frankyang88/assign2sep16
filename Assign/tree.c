@@ -80,11 +80,10 @@ tree tree_insert(tree b, char *str){
 		if( LRBranch(b->key,str) ){
 			
 			if(b->right==NULL){
-				
-				tmp=tree_new();
+				tree_t typet=b->type;
+				tmp=tree_new(typet);
 				b->right=tmp;
 				tmp->parent=b;
-				tmp->type=b->type;
 				tree_insert(tmp,str);
 				if(b->type == RBT)
 				return tree_fix(b->right);
@@ -94,11 +93,10 @@ tree tree_insert(tree b, char *str){
 		}
 		else {
 				if(b->left==NULL){
-			
-				tmp=tree_new();
+				tree_t typet=b->type;
+				tmp=tree_new(typet);
 				b->left=tmp;	
 				tmp->parent=b;
-				tmp->type=b->type;
 				tree_insert(tmp,str);
 				if(b->type == RBT)
 				return tree_fix(b->left);
@@ -230,9 +228,13 @@ tree tree_new(tree_t typet){
 	b->left=NULL;
 	b->right=NULL;
 	b->parent=NULL;
-	b->color=RED;
 	b->type= BST;
 	b->type = typet;
+	
+	if(typet==RBT)
+	b->color=RED;
+	else b->color=BLACK;
+
 	b->frequency = 0;
 	return b; 
 }

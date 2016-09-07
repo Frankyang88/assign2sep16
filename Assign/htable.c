@@ -20,8 +20,8 @@ static void print_stats_line(htable h, FILE *stream, int percent_full);
 
 /*hashfunc1:
  * the first hashfunction used in the htable*/
-static unsigned int hashfunc1(htable h, int i){
-	return abs(i%(h->capacity));
+static unsigned int hashfunc1(htable h, unsigned int i){
+	return i%h->capacity ;
 }
 
 
@@ -30,7 +30,7 @@ static unsigned int hashfunc1(htable h, int i){
 unsigned int htable_step(htable h, unsigned int i_key) {
 int j=h->capacity;
 if(h->method==DOUBLE_H)
-return (i_key % (j- 1));
+return (1+i_key % (j-1));
 else if(h->method==LINEAR_P)
 return 1;
 else printf("hashing undefine");
@@ -71,10 +71,10 @@ static unsigned int htable_word_to_int(char *word){
 int htable_insert(htable h, char *str){
 
 	int k=0;
-	int i=htable_word_to_int(str);
-
+	unsigned int seed=htable_word_to_int(str);
+	unsigned int i;
 	/*calculate the first address of hash function*/
-	i=hashfunc1(h,i);
+	i=hashfunc1(h,seed);
 	
 	/*compare the key with that in hashtable, 
  	* 1)if the cell is unoccupied, insert key into this address
@@ -110,13 +110,12 @@ int htable_insert(htable h, char *str){
 			break;
 		}
 
-		i+=htable_step(h,i);
+		i+=htable_step(h,seed);
 
-		i = i%(h->capacity-1);
+		i = i%(h->capacity);
 
 		k++;
-		if(k>=h->capacity){
-			 
+		if(k>= h->capacity){
 			 return -1;	
 			}		
 		}
@@ -185,17 +184,17 @@ void htable_print(htable h, void (f)(int freq, char*word)){
  * search a string in the htable, the similar operation as insertion 
  *if find the input string,return its frequency otherwise return 0*/
 int htable_search(htable h, char *str){
-	int i=htable_word_to_int(str);
+	unsigned int seed=htable_word_to_int(str);
 	int k=0;
+	unsigned int i=0;
 
-	i=hashfunc1(h, i);	
+	i=hashfunc1(h, seed);	
 
 	while(strcmp(h->string_array[i],str)!=0){ 		
 	
-		i+=htable_step(h,i);
-		
-		
-		i=i%(h->capacity-1);
+		i+=htable_step(h,seed);
+
+		i = i%(h->capacity);
 
 		/*k is a counter. If the programs fail to find the string after a certain number of trials,
  		*it will break out. Here the trials are limited to the table's capacity*/
