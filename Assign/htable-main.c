@@ -9,7 +9,7 @@
 
 /*print info: static method print word and its frequency of htable*/
 static void print_info(int freq,char *word){
-	printf("%-4d %s \n",freq,word);
+	printf("%-4d %s\n",freq,word);
 }
 /*usage: 
  * print the usage of the program*/

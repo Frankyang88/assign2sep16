@@ -211,8 +211,8 @@ int htable_search(htable h, char *str){
 void htable_print_entire_table(htable h){
 int i;
 
-printf("  Pos  Freq  Stats  Word\n");
-printf("--------------------------------------\n");
+fprintf(stderr,"  Pos  Freq  Stats  Word\n");
+fprintf(stderr,"----------------------------------------\n");
 for(i=0;i<h->capacity;i++)
 fprintf(stderr,"%5d %5d %5d   %s\n",i,h->freq_array[i],h->stats[i],h->string_array[i]);
 }

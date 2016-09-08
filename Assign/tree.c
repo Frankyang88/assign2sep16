@@ -68,7 +68,10 @@ tree tree_insert(tree b, char *str){
 	if(b->key==NULL){
 	b->key=emalloc((strlen(str)+1)*sizeof(char));
 	strcpy(b->key,str);
-	b->frequency = 0;
+	if(b->type==BST)
+	b->color=BLACK;
+	
+	b->frequency = 1;
 	return find_root(b);
 
 	}
@@ -84,7 +87,7 @@ tree tree_insert(tree b, char *str){
 				tmp=tree_new(typet);
 				b->right=tmp;
 				tmp->parent=b;
-				tree_insert(tmp,str);
+				tree_insert(b->right,str);
 				if(b->type == RBT)
 				return tree_fix(b->right);
 				else return find_root(b);	
@@ -97,7 +100,7 @@ tree tree_insert(tree b, char *str){
 				tmp=tree_new(typet);
 				b->left=tmp;	
 				tmp->parent=b;
-				tree_insert(tmp,str);
+				tree_insert(b->left,str);
 				if(b->type == RBT)
 				return tree_fix(b->left);
 				else return find_root(b);
@@ -223,7 +226,7 @@ tree find_root(tree b){
  * create a new tree with type typet*/
 tree tree_new(tree_t typet){
 	tree b;
-   	 b= emalloc(sizeof( *b));
+   	b= emalloc(sizeof( *b));
 	b->key= NULL;
 	b->left=NULL;
 	b->right=NULL;
@@ -235,7 +238,7 @@ tree tree_new(tree_t typet){
 	b->color=RED;
 	else b->color=BLACK;
 
-	b->frequency = 0;
+	b->frequency = 1;
 	return b; 
 }
 /*tree preorder:
