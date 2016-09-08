@@ -1,0 +1,74 @@
+this is the out put with two words in the tree repeated over and over
+
+Output:
+0 purview
+0 purview
+1 purview
+2 purview
+3 purview
+4 purview
+5 purview
+6 purview
+7 purview
+8 purview
+9 purview
+10 purview
+11 purview
+12 purview
+13 purview
+0 hello
+0 hello
+1 hello
+2 hello
+3 hello
+4 hello
+5 hello
+6 hello
+0 purview - so it resets at the end back
+0 hello
+
+
+Input:
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+purview
+Hello
+Hello
+Hello
+Hello
+Hello
+Hello
+Hello
+Hello
+
+
+
+if(b->key==NULL){
+	b->key=emalloc((strlen(str)+1)*sizeof(char));
+	strcpy(b->key,str);
+	b->frequency =0;
+        printf("%d %s\n",b->frequency,str);
+	return find_root(b);
+
+	}
+	else {
+
+--so the above method just gets rerun at the end.
+
+            if(strcmp(b->key,str)==0){
+                printf("%d %s\n",b->frequency,str); 
+                b->frequency = b->frequency +1;
+			return find_root(b);		
+		}
