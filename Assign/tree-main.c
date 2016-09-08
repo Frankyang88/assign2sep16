@@ -115,9 +115,11 @@ else {
 				FILE *fp; 
 				if(fflag==1){
 					fp=fopen(fvalue, "wb+");
+					printf("Creating dot file '%s'\n",fvalue);
 
 				}else{ 
-					fp=fopen("tree-view.dot","ab+");
+					fp=fopen("tree-view.dot","wb+");
+					printf("Creating dot file 'tree-view.dot'\n");
 				}
 				/*output to a file*/
 				tree_output_dot(b, fp);
