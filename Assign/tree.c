@@ -20,9 +20,17 @@ struct treerec{
 /*static method declaration*/
 static void tree_output_dot_aux(tree t, FILE *out); 
 
-/*LRBranch:decide the key's position in left or right branch
+/*LRBranch: 
+ *  @param bstr is the key of tree node
+ *  @param istr is the input string
+ *
+ * return 1 means right branch, return 0 means left branch
+ * 
+ * this method decide the key's position in left or right branch
  * this is in alphabetic order
- * do comparison from letter to letter*/
+ * do comparison from letter to letter
+ *
+ * */
 int LRBranch(char* bstr, char* istr){
 	char key= *bstr;
 	char input= *istr;
@@ -52,13 +60,21 @@ int LRBranch(char* bstr, char* istr){
 }
 /*tree insert:
  * insert a string into tree
+ * @param b is the tree that insert the new string into
+ * @param str is the input string
+ * return value is the root of the tree
+ *  
  * if the root(node) is null then return
- * if the current node is not null but its key is null then insert into this node and return root node
+ * if the current node is not null but its key is null 
+ * insert into this node and return root node
  * if the current node is not null and it has already placed a key
  * then check its left or right branch
- * if the left/right branch is null, create a node and insert string into this node
- * otherwise do recursion on that branch(Whether it go to left or right is decided by LRBranch function)
- * after insertion, if it is a red black tree do tree fix and tree fix will return the new root node
+ * if the left/right branch is null
+ * create a node and insert string into this node
+ * otherwise do recursion on that branch
+ * (Whether it go to left or right is decided by LRBranch function)
+ * after insertion, if it is a red black tree do tree fix 
+ * And tree fix will return the new root node
  * if it is a bst, if return the root of the tree*/
 tree tree_insert(tree b, char *str){
 	tree tmp;
@@ -113,10 +129,14 @@ tree tree_insert(tree b, char *str){
 
 
 /*tree search:
+ * search str in the tree b
+ * @param b is the tree where we search for str
+ * @param str is the string that we search in the tree
+ * return 0 means find the string in the tree otherwise return 1;
+ * 
  * search string in the tree, similar to tree insert operation 
- * in the process of finding a cell,
- *if it find the input string in tree, it will return 0
- * otehrwise, it return 1*/
+ * in the process of finding a cell
+ * */
 int tree_search(tree b, char *str){
 	if(b==NULL) return 1;
 
@@ -133,7 +153,10 @@ int tree_search(tree b, char *str){
 }
 
 /*tree depth:
- * return the depth of tree
+ * @param b is the root node of the tree
+ *
+ * it return the depth of tree with root b
+ *
  * recursive operation,it go through all the subtrees
  * and return the maximum height of all nodes as its height*/
 int tree_depth(tree b){
@@ -158,6 +181,10 @@ int tree_depth(tree b){
 }
 
 /*tree free:
+ * free memory of tree b
+ * @param b is the root node of tree
+ * if return value is null, it means a node memory is freed successfully
+ *
  * free the tree nodes and the string memory
  * recursive operation on both left and right children of the current nodes*/
 tree tree_free(tree b){
@@ -177,6 +204,9 @@ tree tree_free(tree b){
 	return b;	
 }
 /*tree inoder:
+ * @param b is the root of tree
+ * @param void (f)(tree_color color, char *str) is a function from another file
+ *
  * inorder traverse,print tree node in inorder*/
 void tree_inorder(tree b, void (f)(tree_color color, char *str)){
 	
@@ -192,6 +222,9 @@ void tree_inorder(tree b, void (f)(tree_color color, char *str)){
 }
 
 /*tree postorder:
+ * @param b is the root of tree
+ * @param void (f)(tree_color color, char *str) is a function from another file
+ * 
  * postorder traverse,print tree node in post order*/
 void tree_postorder(tree b, void (f)(tree_color color, char *str)){
 	
@@ -206,9 +239,12 @@ void tree_postorder(tree b, void (f)(tree_color color, char *str)){
 	}
 
 }
-/*find root
+/*find root:
+ * @param b is the root of tree or a node in a tree
+ *
  * return the root node of the tree
- * if the node's parent is null, then return it*/
+ *
+ * if the node's parent is null, then return the current node*/
 tree find_root(tree b){
 	if(b==NULL)
 	return b;
@@ -223,6 +259,11 @@ tree find_root(tree b){
 }
 
 /*tree new:
+ * create a tree node on heaps
+ * @param typet : means BST or RBT,the type of tree
+ *
+ * return value is a new tree node
+ * 
  * create a new tree with type typet*/
 tree tree_new(tree_t typet){
 	tree b;
@@ -242,6 +283,8 @@ tree tree_new(tree_t typet){
 	return b; 
 }
 /*tree preorder:
+ * @param b is the root of tree
+ * @param void (f)(tree_color color, char *str) is a function from another file
  * print the tree node in preorder*/
 void tree_preorder(tree b, void (f)(tree_color color,char *str)){
 	if (b!= NULL){
@@ -252,6 +295,10 @@ void tree_preorder(tree b, void (f)(tree_color color,char *str)){
        	}
 }
 /*tree min:
+ * find minimum node in tree b
+ *@param b is the tree root node
+ *return value is the min(leftmost) node
+ *
  * find the minimum node in the tree
  * go down recursive to the left most child*/
 tree tree_min(tree b){
@@ -266,6 +313,10 @@ tree tree_min(tree b){
 	return NULL;
 }
 /*tree max:
+ * find maximum node in tree b
+ * @param b is  the tree's root node
+ * return the max(right most)node
+ *
  * find the maximum node in the tree
  * go down recursively to the right most child*/
 tree tree_max(tree b){
@@ -281,16 +332,22 @@ tree tree_max(tree b){
 	return NULL;
 }
 /*right rotate:
+ * right rotate tree b
+ * @param b is the 'root' node that apply right rotate operation
+ * return value is the new 'root' of the given tree or subtree
+ *
  * make the left child of root to be the new root
  * make the old root to be new right child of the new root
- * then if the new root's has an old right child,make the old right child to be the left child of the old root
- * if the new root has no old right child, make the old root's left child to be null
+ * then if the new root's has an old right child,
+ * make the old right child to be the left child of the old root
+ * if the new root has no old right child,
+ * make the old root's left child to be null
  * then fix up all the pointer of parents
  * the new root get the parent of the old root
  * then set the old root's parent to be new root*/
 tree right_rotate(tree b){
 	
-	if(NULL==b || NULL==b->left)
+	if(NULL== b || NULL==b->left)
 	return b;
 	else{
 		tree tmp=b;
@@ -314,10 +371,16 @@ tree right_rotate(tree b){
 		}
 }
 /*left rotate:
+ * left rotate tree b
+ * @param b is the 'root' node that apply left rotate operation
+ * return value is the new 'root' of the given tree or subtree
+ *
  * make the right child of root to be the new root
  * make the old root to be new left child of the new root
- * then if the new root's has an old left child,make the old left child to be the right child of the old root
- * if the new root has no old left child, make the old root's right child to be null
+ * then if the new root's has an old left child,
+ * make the old left child to be the right child of the old root
+ * if the new root has no old left child, 
+ * make the old root's right child to be null
  * then fix up all the pointer of parents
  * the new root get the parent of the old root
  * then set new root as the old root's parent*/
@@ -345,7 +408,11 @@ tree left_rotate(tree b){
 		}
 }
 /*tree fix:
- * recursive operation from the current to the top nodes
+ * fix color for node b if it is a RBT
+ *@param b is the node with a red parent, of which the color need to be fixed 
+ *return value is the root of the current tree after the colors of all the nodes are fixed; 
+ *
+ * recursive operation from the current to the grandparent(if it exists)
  * exactly the same operation as that in the labbook
  * add some code to fix the pointer problems that may break the tree's link
  * it fix the 'root' recursively 
@@ -365,7 +432,8 @@ tree tree_fix(tree b){
 				return b->parent;
 			}
 			else {
-				if(  ( b->parent->parent->left == b->parent && b->parent->left == b   ) &&  IS_RED(b->parent) && IS_RED(b->parent->left)){
+				if(  ( b->parent->parent->left == b->parent && b->parent->left == b)
+			    	     &&  IS_RED(b->parent) && IS_RED(b->parent->left)){
 					if(IS_BLACK(b->parent->parent->right)){
 						tree R = b->parent->parent->parent;
 						new_root1=right_rotate(b->parent->parent);
@@ -384,7 +452,8 @@ tree tree_fix(tree b){
 					  return tree_fix(b->parent->parent);
 					}
 				}
-			if( ( b->parent->parent->left == b->parent && b->parent->right == b  )  && IS_RED(b->parent) && IS_RED(b->parent->right)){
+			if( ( b->parent->parent->left == b->parent && b->parent->right == b  )  
+			    && IS_RED(b->parent) && IS_RED(b->parent->right)){
 				if(IS_RED(b->parent->parent->right)){
 					b->parent->parent->color= RED;
 					b->parent->parent->left->color= BLACK;
@@ -414,7 +483,8 @@ tree tree_fix(tree b){
 					}
 				}
 
-			if( (  b->parent->parent->right == b->parent && b->parent->left == b   ) && IS_RED(b->parent) && IS_RED(b->parent->left)){
+			if( (  b->parent->parent->right == b->parent && b->parent->left == b)
+				 && IS_RED(b->parent) && IS_RED(b->parent->left)){
 				if(IS_RED(b->parent->parent->left)){
 					b->parent->parent->color= RED;
 					b->parent->parent->left->color= BLACK;
@@ -443,7 +513,8 @@ tree tree_fix(tree b){
 				}
 			}
 
-			if( ( b->parent->parent->right == b->parent && b->parent->right == b  ) && IS_RED(b->parent) && IS_RED(b->parent->right)){
+			if( ( b->parent->parent->right == b->parent && b->parent->right == b ) 
+				&& IS_RED(b->parent) && IS_RED(b->parent->right)){
 
 		
 			  if(IS_RED(b->parent->parent->left)){
@@ -468,6 +539,7 @@ tree tree_fix(tree b){
 				return tree_fix(new_root1);	
 			  }
 			}
+
 
 
 		}

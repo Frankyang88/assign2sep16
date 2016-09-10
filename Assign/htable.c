@@ -19,6 +19,11 @@ hashing_t method;
 static void print_stats_line(htable h, FILE *stream, int percent_full); 
 
 /*hashfunc1:
+ * define the first hash function
+ *@param h is the hashtable
+ *@param i is the original integer key of string
+ * return value is the key address in the hashtable h
+ * 
  * the first hashfunction used in the htable*/
 static unsigned int hashfunc1(htable h, unsigned int i){
 	return i%h->capacity ;
@@ -26,6 +31,12 @@ static unsigned int hashfunc1(htable h, unsigned int i){
 
 
 /*htable step:
+ * define the step after a collision
+
+ * @param: h is the hashtable
+ * @param  i_key is the original key of the input string
+ * return value is a shift from the current key address
+ * 
  * hash table step methods linear hashing or double hashing are different in steps*/
 unsigned int htable_step(htable h, unsigned int i_key) {
 int j=h->capacity;
@@ -39,6 +50,9 @@ return 0;
 }
 
 /* htable free:
+ * free memory
+ * @param h is the hashtable that is no longer in use
+ * 
  * free the htable , statistics,freq array and string array
  * certainly free htable's inner variables before releasing htable itself*/
 void htable_free(htable h){
@@ -56,6 +70,9 @@ void htable_free(htable h){
 }
 
 /*htable word to int:
+ * @param word : input string
+ * return value is a coversion from the input string to an unsigned integer
+ *
  * method covert a string to a integer*/
 static unsigned int htable_word_to_int(char *word){
 	unsigned int result=0;
@@ -67,7 +84,22 @@ static unsigned int htable_word_to_int(char *word){
 	return result;
 }
 
-/*htable insert:*/
+/*htable insert:
+ * insert string into htable
+ * @param h is the hashtable that insert data into
+ * @param str is the string inserted into the hashtable h
+ * return value is the frequency of the word in the current hashtable(after insertion)
+ * 
+ *compare the key with that in hashtable, 
+ * 1)if the cell is unoccupied, insert key into this address
+ * set collision as 0,increase key number by 1, set key freq as 1
+ * 2)if the key is the same as that in hashtable
+ * increase the related freq by 1 and return the key's frequency
+ * 3)while loop, it will take a step to another address, 
+ * try to find an address that it is unoccupied or it host the same key
+ * if it fails for the same number as its capacity, it will break automatically and stop
+ * if it find the expected cell, it will break and do other operation as explained below*/
+
 int htable_insert(htable h, char *str){
 
 	int k=0;
@@ -76,15 +108,6 @@ int htable_insert(htable h, char *str){
 	/*calculate the first address of hash function*/
 	i=hashfunc1(h,seed);
 	
-	/*compare the key with that in hashtable, 
- 	* 1)if the cell is unoccupied, insert key into this address
- 	* set collision as 0,increase key number by 1, set key freq as 1
- 	* 2)if the key is the same as that in hashtable
- 	* increase the related freq by 1 and return the key's frequency
- 	* 3)while loop, it will take a step to another address, 
- 	* try to find an address that it is unoccupied or it host the same key
- 	* if it fails for the same number as its capacity, it will break automatically and stop
- 	* if it find the expected cell, it will break and do other operation as explained below*/
 	if(strcmp(h->string_array[i],"")==0){
 		h->string_array[i]=emalloc((strlen(str)+1)*sizeof str[0]);
 	
@@ -122,7 +145,8 @@ int htable_insert(htable h, char *str){
 	}
 
 	/* if find a unoccupied place, insert the key into the new address 
- 	* record the number of collision and set up word frequency,increase key number*/
+ 	* record the number of collision 
+ 	* and set up word frequency,increase key number*/
 	if(0==strcmp(h->string_array[i],"")){
 		h->string_array[i]=emalloc((strlen(str)+1)*sizeof str[0]);
 	
@@ -147,7 +171,12 @@ int htable_insert(htable h, char *str){
 }
 
 
-/*create a htable, initiate the related variables and memory allocation*/
+/*htable new:
+ * @param capacity is the size of hashtable
+ * @param method define how to handle collisions(double hashing or linear probing)
+ * return value is the hashtable created
+ *
+ * create a htable, initiate the related variables and memory allocation*/
 htable htable_new(int capacity,hashing_t method){
 	
 	int i;
@@ -170,7 +199,11 @@ htable htable_new(int capacity,hashing_t method){
 	return result; 
 }
 
-/*print the word's frequency and the word*/
+/*htable_print:
+ * @param h is the printed hashtable
+ * @param void(f)(int freq,char *word) is a function defined in another file
+ * 
+ * print the word's frequency and the word*/
 void htable_print(htable h, void (f)(int freq, char*word)){
 	int i;
 	for(i=0;i<h->capacity;i++){
@@ -181,8 +214,12 @@ void htable_print(htable h, void (f)(int freq, char*word)){
 
 
 /*htable_search:
- * search a string in the htable, the similar operation as insertion 
- *if find the input string,return its frequency otherwise return 0*/
+ * @param h is the hashtable in which we search data
+ * @param str is the string that we search in the hashtable h
+ * if find the input string,return its frequency otherwise return 0
+ *
+ *search a string in the htable, the similar operation as insertion 
+ * */
 int htable_search(htable h, char *str){
 	unsigned int seed=htable_word_to_int(str);
 	int k=0;
@@ -196,8 +233,9 @@ int htable_search(htable h, char *str){
 
 		i = i%(h->capacity);
 
-		/*k is a counter. If the programs fail to find the string after a certain number of trials,
- 		*it will break out. Here the trials are limited to the table's capacity*/
+		/*k is a counter. 
+ 		 * If the programs fail to find the string after a certain number of trials,
+ 		 *it will break out. Here the trials are limited to the table's capacity*/
 		k++;
 		if(k>= h->capacity)
 		 return 0;			
@@ -207,6 +245,8 @@ int htable_search(htable h, char *str){
 }
 
 /*htable print entire table:
+ * @param h is the hashtable that we print data from.
+ *
  * print out the hash table position,frequency ,statistics and string*/
 void htable_print_entire_table(htable h){
 int i;

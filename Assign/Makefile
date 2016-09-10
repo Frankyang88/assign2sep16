@@ -2,7 +2,7 @@
 
 CC=gcc
 
-CFLAGS=-ansi -pedantic -W -Wall -O2 -g -c
+CFLAGS=-ansi -pedantic -lm -W -Wall -O2 -g -c 
 
 
 SOURCE1 = htable-main.c mylib.c htable.c

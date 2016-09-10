@@ -1,5 +1,0 @@
-
-	gcc -ansi -pedantic -W -Wall -O2 -g -c htable.c
-	gcc -ansi -pedantic -W -Wall -O2 -g -c htable-main.c
-	gcc -ansi -pedantic -W -Wall -O2 -g -c mylib.c
-	gcc -o htable-main  htable-main.o htable.o mylib.o

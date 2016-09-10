@@ -7,6 +7,8 @@
 /**
  *Allocates memory.
  *@param size_t s The byte size of memory to be allocated
+ *
+ * return the pointer point to the current data structure
  */
 void *emalloc(size_t s) {
     void *result = malloc(s);
