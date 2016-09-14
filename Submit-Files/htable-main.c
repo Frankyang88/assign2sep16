@@ -8,11 +8,11 @@
 #include <time.h>
 
 /**
- * Function sent to htable_print within  htable.c for printing a hash table.
+ * Function sent to htable_print within htable.c for printing a hash table.
  * Prints each word and its frequency.
  *
- * @param freq - is frequency of each word.
- * @param word -  is the string 
+ * @param freq - the frequency of each word.
+ * @param word -  input string.
  */
 static void print_info(int freq, char *word){
     printf("%-4d %s\n",freq, word);
@@ -46,7 +46,8 @@ void usage(){
  * Finds the first prime number equal to or after the interger entered. 
  *
  * @param seed - input integer.
- * @return nearest prime number equal to larger than entered number.
+ * @return nearest prime number equal to 
+ * or larger than entered number.
  */
 unsigned int first_prime(unsigned int seed){
     unsigned int s = seed;
