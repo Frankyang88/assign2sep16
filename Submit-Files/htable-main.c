@@ -25,8 +25,7 @@ void usage(){
     printf("Usage: ./htable-main [Option] <Stdin>\n");
     printf("\n");
     printf("Perform various operations using a hash table.\n");
-    printf("By default, words are read from stdin and added to the hash table,
- \n");
+    printf("By default, words are read from stdin and added to the hash table,\n");
     printf("before being printed out alongside their frequencies to stdout\n");
     printf("\n");
     printf("-c FILENAME  Check spelling of words in FILENAME using words\n");
