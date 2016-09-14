@@ -4,9 +4,8 @@
 #include <string.h>
 #include "mylib.h"
 
-
 /**
- * Tree struct.
+ * Tree structure.
  */
 struct treerec{
     char *key;
@@ -18,15 +17,10 @@ struct treerec{
     int frequency;
 };
 
-
-
 /**
  * Static method declaration.
  */
-
 static void tree_output_dot_aux(tree t, FILE *out); 
-
-
 
 /**
  * This method decides the key's position in the left or right branch 
@@ -35,13 +29,12 @@ static void tree_output_dot_aux(tree t, FILE *out);
  * @param bstr is the key of the tree node.
  * @param istr is the input string.
  */
-
-int LRBranch(char* bstr, char* istr){
+int LRBranch(char* bstr, char* istr){    
+    char key = *bstr;
+    char input = *istr;
+    int x = 0;
     
-    char key= *bstr;
-    char input= *istr;
-    int x=0;
-    if(key!='\0' && input != '\0')
+    if(key != '\0' && input != '\0')
 	x = key-input;
     else if(key=='\0' && input !='\0')
 	return 1;
@@ -53,12 +46,8 @@ int LRBranch(char* bstr, char* istr){
 	return 1;
     else if(x>0)
 	return 0;
-    else return LRBranch(bstr+1,istr+1); 
-		
-	
+    else return LRBranch(bstr+1,istr+1); 			
 }
-
-
 
 /**
  * This method inserts a given string into a given tree.
@@ -68,22 +57,19 @@ int LRBranch(char* bstr, char* istr){
  * @return find_root(b) returns the root node.
  * @return tree_fix(b) returns the output of the tree_fix method.
  */
-
 tree tree_insert(tree b, char *str){
     tree tmp;
     /*If the root(node) is null then return*/
     if(b == NULL || str == NULL ) return b;
     /*If the current node is not null but its key is null 
-     then insert into the current node and return root node*/
+      then insert into the current node and return root node*/
     if(b->key==NULL){
 	b->key=emalloc((strlen(str)+1)*sizeof(char));
 	strcpy(b->key,str);
 	if(b->type==BST)
-            b->color=BLACK;
-	
+            b->color=BLACK;	
 	b->frequency = 1;
 	return find_root(b);
-
     }
     else {
         /*If the left/right branch is null create a node and insert the
@@ -126,26 +112,20 @@ tree tree_insert(tree b, char *str){
     return find_root(b);
 }
 
-
-
-
- /**
+/**
  * This method searches the tree for a given input.
  *
  * @param tree b is the tree we will search for the input string.
  * @param str is the string we are searching for.
  * @return 0 =string found, 1 = string not found.
- * 
  */
- 
 int tree_search(tree b, char *str){
     if(b==NULL) return 1;
 
     if(b->key==NULL) return 1;
     else {
-        if( strcmp(b->key,str)==0)
-            {	return 0;
-		
+        if( strcmp(b->key,str)==0){
+            return 0;		
             }
         else if(LRBranch(b->key,str))
             return tree_search(b->right,str);
@@ -158,11 +138,8 @@ int tree_search(tree b, char *str){
  *
  * @param tree b is the root node of the tree.
  * @return depthl returns the depth of the left subtree with root b.
- * @return depthr returns the depth of the left subtree with root b.
- * 
+ * @return depthr returns the depth of the left subtree with root b. 
  */
-
-
 int tree_depth(tree b){
     int depthl=0;
     int depthr=0;
@@ -189,21 +166,19 @@ int tree_depth(tree b){
  *
  * @param tree b is the root node of the tree.
  * @return null if a nodes memory is freed successfully.
- * 
  */
-
 tree tree_free(tree b){
 	
-    if(b!=NULL){
-		
-	if(b->left !=NULL)
+    if(b!=NULL){		
+	if(b->left !=NULL){
             tree_free(b->left);
-	if(b->right !=NULL)
+        }
+	if(b->right !=NULL){
             tree_free(b->right);
-	
-	if(b->key!=NULL)
+        }
+	if(b->key!=NULL){
             free(b->key);
-	
+        }
 	free(b);
     }
     return b;	
@@ -214,18 +189,12 @@ tree tree_free(tree b){
  *
  * @param tree b is the root node of the tree.
  * @param void (f)(tree_color color, char *str) is a function from another file.
- * 
- * 
  */
-
 void tree_inorder(tree b, void (f)(tree_color color, char *str)){
-	
-	
-    if(b != NULL) {
-	
+		
+    if(b != NULL) {	
 	tree_inorder( (b->left), f);
 	f(b->color,b->key);
-
         tree_inorder( (b->right), f);
     }
 }
@@ -235,22 +204,14 @@ void tree_inorder(tree b, void (f)(tree_color color, char *str)){
  *
  * @param tree b is the root node of the tree.
  * @param void (f)(tree_color color, char *str) is a function from another file.
- * 
- * 
  */
-
 void tree_postorder(tree b, void (f)(tree_color color, char *str)){
-	
-	
-    if(b != NULL) {
-	
-	tree_postorder( (b->left), f);
-	
+		
+    if(b != NULL) {	
+	tree_postorder( (b->left), f);	
         tree_postorder( (b->right), f);
 	f(b->color,b->key);
-
     }
-
 }
 
 /**
@@ -259,19 +220,15 @@ void tree_postorder(tree b, void (f)(tree_color color, char *str)){
  * @param tree b is the root node of the tree or a node in the tree.
  * @return find_root() the root node of the tree.
  * @return NULL.
- * 
  */
-
 tree find_root(tree b){
     if(b==NULL)
-	return b;
-	
+	return b;	
     if(b->parent == NULL)
 	return b;
     /*if the node's parent is null, then return the current node*/
     if(b->parent != NULL)
 	return find_root(b->parent);
-
     return NULL;
 }
 
@@ -280,9 +237,7 @@ tree find_root(tree b){
  *
  * @param tree_t typet BST or RBT,the type of tree.
  * @return b a new tree node.
- * 
  */
-
 tree tree_new(tree_t typet){
     tree b;
     b= emalloc(sizeof( *b));
@@ -306,11 +261,7 @@ tree tree_new(tree_t typet){
  *
  * @param tree b is the root node of the tree.
  * @param void (f)(tree_color color, char *str) is a function from another file.
- * 
- * 
  */
-
-
 void tree_preorder(tree b, void (f)(tree_color color,char *str)){
     if (b!= NULL){
     	f(b->color,b->key);
@@ -326,10 +277,7 @@ void tree_preorder(tree b, void (f)(tree_color color,char *str)){
  * @param tree b is the root node.
  * @return b the lowest value key in the tree.
  * @return NULL.
- * 
  */
-
-
 tree tree_min(tree b){
     if(b==NULL) return NULL;
 		
@@ -349,7 +297,6 @@ tree tree_min(tree b){
  * @return b the highest value key in the tree.
  * @return NULL.
  */
-
 tree tree_max(tree b){
     if(b==NULL) return b;
 		
@@ -359,7 +306,6 @@ tree tree_max(tree b){
     if(b->right==NULL && b->key !=NULL){
 	return b;
     }
-
     return NULL;
 }
 
@@ -368,10 +314,7 @@ tree tree_max(tree b){
  *
  * @param tree b is the root node we apply the right rotate operation to.
  * @return b is the new 'root' of the given tree or subtree.
- * 
  */
-
-
 tree right_rotate(tree b){
 	
     if(NULL== b || NULL==b->left)
@@ -396,10 +339,8 @@ tree right_rotate(tree b){
         /*the new root get the parent of the old root
           then set the old root's parent to be new root*/
         b->right=tmp;
-        tmp->parent=b;
-		
-        return b;
-		
+        tmp->parent=b;		
+        return b;		
     }
 }
 
@@ -408,9 +349,7 @@ tree right_rotate(tree b){
  *
  * @param tree b is the root node we apply the left rotate operation to.
  * @return b is the new 'root' of the given tree or subtree.
- * 
  */
-
 tree left_rotate(tree b){
 
     if(NULL==b || NULL==b->right)
@@ -444,33 +383,28 @@ tree left_rotate(tree b){
  *  colour needs to be fixed.
  * @return b the root of the current tree after the colors
  *  of all the nodes are fixed.
- * 
  */
-
-
-tree tree_fix(tree b){
-    
+tree tree_fix(tree b){    
     /* Recursive operation from the current to the grandparent(if it exists)
      * exactly the same operation as that in the labbook
      * add some code to fix the pointer problems that may break the tree's link
-     * it fix the 'root' recursively 
-     * if grandparent does not exist and parent exist, just repaint parent black
-     * if parent doesnot exist, repaint itself black
-     */
-    
+     * it fixes the 'root' recursively 
+     * if the grandparent does not exist and parent exist, just repaint parent black
+     * if the parent does not exist, repaint itself black
+     */    
     tree new_root1;
     tree new_root2;
 
-    if(b->parent == NULL){
+    if(b->parent == NULL) {
         b->color = BLACK;
         return b;
     }
-    else if(b->parent->parent==NULL){
+    else if(b->parent->parent==NULL) {
         b->parent->color = BLACK;
         return b->parent;
     }
     else {
-        if(  ( b->parent->parent->left == b->parent && b->parent->left == b)
+        if((b->parent->parent->left == b->parent && b->parent->left == b)
              &&  IS_RED(b->parent) && IS_RED(b->parent->left)){
             if(IS_BLACK(b->parent->parent->right)){
                 tree R = b->parent->parent->parent;
@@ -490,7 +424,7 @@ tree tree_fix(tree b){
                 return tree_fix(b->parent->parent);
             }
         }
-        if( ( b->parent->parent->left == b->parent && b->parent->right == b  )  
+        if((b->parent->parent->left == b->parent && b->parent->right == b)  
             && IS_RED(b->parent) && IS_RED(b->parent->right)){
             if(IS_RED(b->parent->parent->right)){
                 b->parent->parent->color= RED;
@@ -498,8 +432,8 @@ tree tree_fix(tree b){
                 b->parent->parent->right->color=BLACK;
                 return tree_fix(b->parent->parent);
             }
-            if(IS_BLACK(b->parent->parent->right)){
-
+            if(IS_BLACK(b->parent->parent->right)) {
+                
                 tree R1 = b->parent->parent;
                 tree R2 = b->parent->parent->parent;
 			
@@ -512,24 +446,21 @@ tree tree_fix(tree b){
                     R2->left = new_root1;		
                 else if(R2!=NULL && R2->right== new_root2->right)
                     R2->right = new_root1;
-		
-
-			
+					
                 new_root2->color=BLACK;
                 new_root2->right->color=RED;	
                 return tree_fix(new_root2);	
             }
         }
-
-        if( (  b->parent->parent->right == b->parent && b->parent->left == b)
-            && IS_RED(b->parent) && IS_RED(b->parent->left)){
-            if(IS_RED(b->parent->parent->left)){
+        if((b->parent->parent->right == b->parent && b->parent->left == b)
+            && IS_RED(b->parent) && IS_RED(b->parent->left)) {
+            if(IS_RED(b->parent->parent->left)) {
                 b->parent->parent->color= RED;
                 b->parent->parent->left->color= BLACK;
                 b->parent->parent->right->color=BLACK;
                 return tree_fix(b->parent->parent);
             }
-            if(IS_BLACK(b->parent->parent->left)){
+            if(IS_BLACK(b->parent->parent->left)) {
 			
                 tree R1 = b->parent->parent;
                 tree R2 = b->parent->parent->parent;
@@ -550,10 +481,8 @@ tree tree_fix(tree b){
                 return tree_fix(new_root2);		
             }
         }
-
-        if( ( b->parent->parent->right == b->parent && b->parent->right == b ) 
-            && IS_RED(b->parent) && IS_RED(b->parent->right)){
-
+        if((b->parent->parent->right == b->parent && b->parent->right == b) 
+            && IS_RED(b->parent) && IS_RED(b->parent->right)) {
 		
             if(IS_RED(b->parent->parent->left)){
                 b->parent->parent->color= RED;
@@ -561,7 +490,7 @@ tree tree_fix(tree b){
                 b->parent->parent->right->color=BLACK;
                 return tree_fix(b->parent->parent);
             }
-            if(IS_BLACK(b->parent->parent->left)){
+            if(IS_BLACK(b->parent->parent->left)) {
 
                 tree R = b->parent->parent->parent;
 
@@ -577,19 +506,9 @@ tree tree_fix(tree b){
                 return tree_fix(new_root1);	
             }
         }
-
-
-
     }
-
     return find_root(b);
-
-    /* return find_root(b);*/
 }
-
-/* -*- mode:c -*- */
-
-/* These functions should be added to your tree.c file */
 
 /**
  * Output a DOT description of this tree to the given output stream.
@@ -631,4 +550,3 @@ static void tree_output_dot_aux(tree t, FILE *out) {
         fprintf(out, "\"%s\":f2 -> \"%s\":f0;\n", t->key, t->right->key);
     }
 }
-
