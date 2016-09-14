@@ -25,7 +25,7 @@ static void print_stats_line(htable h, FILE *stream, int percent_full);
  * Defines the first hash function.
  *
  * @param h - the hash table.
- * @param i - is the original integer key of string.
+ * @param i - is the original integer key of the string.
  * @return the key index in the hashtable h.
  */
 static unsigned int hashfunc1(htable h, unsigned int i) {
@@ -33,8 +33,9 @@ static unsigned int hashfunc1(htable h, unsigned int i) {
 }
 
 /**
- * Defines the step after a collision.  Steps for linear hashing or double
- * hashing methods are different.
+ * Defines the step size after a collision. Steps for linear hashing
+ * or double hashing methods are different sizes.
+ * 
  *
  * @param h - the hash table.
  * @param i - the original key of the input string.
@@ -74,7 +75,7 @@ void htable_free(htable h) {
 }
 
 /**
- * Converts the htable word to an interger.
+ * Converts the htable word to an integer.
  *
  * @param word - the input string.
  * @return value is a coversion from the input string to an unsigned integer.
@@ -172,7 +173,7 @@ int htable_insert(htable h, char *str) {
  * Creates a hash table, initiates the related variables and allocates memory.
  *
  * @param capacity - is the size of hashtable.
- * @param method define how to handle collisions(double hashing or linear
+ * @param method defines how to handle collisions(double hashing or linear
  *        probing).
  * @return htable the hash table created.
  */
@@ -213,7 +214,7 @@ void htable_print(htable h, void (f)(int freq, char*word)) {
  * Searches the hash table for the given word.
  *
  * @param h - the hash table to search.
- * @param str - is the string that we search in the hashtable h
+ * @param str - is the string that we search in the given hashtable.
  *
  * @return the frequency of the word or 0 if the word is not found.
  */
@@ -241,7 +242,8 @@ int htable_search(htable h, char *str) {
 }
 
 /**
- * Prints out the entire table, with index, stats and frequency of each word.
+ * Prints out the entire table, with index
+ * stats and the frequency of each word.
  *
  * @li Pos - Index position of the word.
  * @li Freq - Frequency of the word in the hash table.
@@ -273,7 +275,7 @@ void htable_print_entire_table(htable h) {
  * @li Maximum Collisions - the most collisions that have occurred
  * while placing a key.
  *
- * @param h the hashtable to print statistics summary from.
+ * @param h the hashtable to print the statistics summary from.
  * @param stream the stream to send output to.
  * @param num_stats the maximum number of statistical snapshots to print.
  */
